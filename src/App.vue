@@ -1,28 +1,41 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="container-fluid">
+    <AppTable 
+      :products="$data.products"
+    />
+    <Vuedal/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {Component as Vuedal} from 'vuedals';
+import AppTable from './components/AppTable.vue';
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
+    AppTable,
+    Vuedal
+  },
+  data: function() {
+    return {
+      products: [
+        { id: 1, name: '12', unitPrice: 3, unitsInStock: 0, discontinued: true  },
+        { id: 2, name: 'Chai', unitPrice: 18, unitsInStock: 39, discontinued: false  },
+        { id: 3, name: 'Chang', unitPrice: 19, unitsInStock: 17, discontinued: false  }
+      ]
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+#app .vuedal {
+  padding: 0;
 }
 </style>
