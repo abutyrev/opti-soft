@@ -40,9 +40,25 @@ export default {
       var vm = this;
       vm.$vuedals.open({
         component: AppEditPopup,
-        props: {},
+        props: {
+          record: {
+            name: '',
+            unitPrice: 5,
+            unitsInStock: 3,
+            discontinued: false
+          },
+          action: 'add'
+        },
         escapable: true,
-        dismissable: false
+        dismissable: false,
+        onClose(data) {
+          if (data && data.record) {
+            if (data.action == 'add')
+              vm.$emit('add-record', data.record);
+            else if (data.action == 'update')
+              vm.$emit('update-record', data.record);
+          }
+        }
       });
     }
   }
