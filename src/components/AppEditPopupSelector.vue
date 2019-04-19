@@ -1,8 +1,21 @@
 <template>
   <div class="form-group row">
-    <label for="$props.selector.id" class="col-4 col-form-label">{{ $props.selector.text }}</label>
+    <label for="selector.id" class="col-4 col-form-label">{{ selector.text }}</label>
     <div class="col-8 d-flex justify-content-start">
-      <input id="$props.selector.id" type="text" class="form-control app-selector-input" v-model="$props.value">
+      <input
+        v-if="selector.id == 'unitPrice'"
+        id="selector.id"
+        type="text"
+        class="form-control app-selector-input"
+        :value="inputValue | toCurrency"
+      >
+      <input
+        v-else
+        id="selector.id"
+        type="text"
+        class="form-control app-selector-input"
+        :value="inputValue"
+      >
       <div class="app-btns-selector-container">
         <button class="btn btn-light app-selector-btn app-selector-btn-up">
           <img src="../assets/caret-up-solid.svg" alt="carret up">
@@ -18,9 +31,17 @@
 <script>
 export default {
   name: "AppEditPopupSelector",
-  props: ["selector", "value"],
-  model: ['value'],
-  methods: {}
+  props: ["selector"],
+  data: function() {
+    return {
+      inputValue: ""
+    };
+  },
+  methods: {},
+  mounted: function() {
+    console.log(this.selector);
+    this.inputValue = this.selector.value;
+  }
 };
 </script>
 

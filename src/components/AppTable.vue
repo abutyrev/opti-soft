@@ -3,7 +3,7 @@
     <thead>
       <tr>
         <th scope="col" colspan="5">
-          <button class="btn btn-primary" @click="showPopup()">Add new record</button>
+          <button class="btn btn-primary" @click="onAddNewRecordClick">Add new record</button>
         </th>
       </tr>
       <tr>
@@ -15,7 +15,7 @@
       </tr>
     </thead>
     <tbody>
-      <AppTableItem v-for="product in $props.products" :key="product.id" :product="product"/>
+      <AppTableItem v-for="product in products" :key="product.id" :product="product"/>
     </tbody>
   </table>
 </template>
@@ -36,27 +36,23 @@ export default {
     AppTableItem
   },
   methods: {
-    showPopup() {
+    onAddNewRecordClick() {
       var vm = this;
-      vm.$vuedals.open({
+      this.$vuedals.open({
         component: AppEditPopup,
         props: {
           record: {
-            name: '',
-            unitPrice: 5,
-            unitsInStock: 3,
-            discontinued: false
-          },
-          action: 'add'
+            name: "asdas",
+            unitPrice: 1,
+            unitsInStock: 2,
+            discontinued: true
+          }
         },
         escapable: true,
         dismissable: false,
         onClose(data) {
           if (data && data.record) {
-            if (data.action == 'add')
-              vm.$emit('add-record', data.record);
-            else if (data.action == 'update')
-              vm.$emit('update-record', data.record);
+            vm.$emit("add-record", data.record);
           }
         }
       });
