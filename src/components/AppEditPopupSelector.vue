@@ -7,20 +7,35 @@
         id="selector.id"
         type="text"
         class="form-control app-selector-input"
-        :value="inputValue | toCurrency"
+        :value="computedInputValue"
+        @focus="onFocus"
+        @focusout="onFocusOut"
+        @input="onInput($event.target.value)"
+        @keypress.enter.prevent
       >
       <input
         v-else
         id="selector.id"
         type="text"
         class="form-control app-selector-input"
-        :value="inputValue"
+        :value="computedInputValue"
+        @focus="onFocus"
+        @focusout="onFocusOut"
+        @input="onInput($event.target.value)"
+        @keypress.enter.prevent
       >
       <div class="app-btns-selector-container">
-        <button class="btn btn-light app-selector-btn app-selector-btn-up">
+        <button
+          class="btn btn-light app-selector-btn app-selector-btn-up"
+          @click.stop.prevent="incrementValue"
+        >
           <img src="../assets/caret-up-solid.svg" alt="carret up">
         </button>
-        <button class="btn btn-light app-selector-btn app-selector-btn-down">
+        <button
+          class="btn btn-light app-selector-btn app-selector-btn-down"
+          @click.stop.prevent="decrementValue"
+          :class="{ disabled }"
+        >
           <img src="../assets/caret-up-solid.svg" alt="carret down">
         </button>
       </div>
@@ -31,16 +46,70 @@
 <script>
 export default {
   name: "AppEditPopupSelector",
-  props: ["selector"],
+  props: ["selector", "value"],
   data: function() {
     return {
-      inputValue: ""
+      inputValue: "",
+      isOnFocus: false
     };
   },
-  methods: {},
+  methods: {
+    toCurrencyFormat(value) {
+      if (typeof value !== "number") {
+        return value;
+      }
+      var formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return formatter.format(value);
+    },
+    onFocus() {
+      this.isOnFocus = true;
+    },
+    onFocusOut() {
+      this.isOnFocus = false;
+    },
+    onInput(value) {
+      var regexp = /^[0-9]+(\.[0-9]{1,2})?$/;
+      if (!regexp.test(value)) return;
+      this.inputValue = +value;
+      this.$emit("selector-input", {
+        field: this.selector.id,
+        value: this.inputValue
+      });
+    },
+    incrementValue() {
+      this.inputValue = ++this.inputValue;
+      this.$emit("selector-input", {
+        field: this.selector.id,
+        value: this.inputValue
+      });
+    },
+    decrementValue() {
+      if (this.inputValue <= 0) return;
+      this.inputValue = --this.inputValue;
+      this.$emit("selector-input", {
+        field: this.selector.id,
+        value: this.inputValue
+      });
+    }
+  },
   mounted: function() {
-    console.log(this.selector);
     this.inputValue = this.selector.value;
+  },
+  computed: {
+    computedInputValue: function() {
+      if (this.isOnFocus) return this.inputValue;
+      else if (this.selector.id == "unitsInStock") return this.inputValue;
+      else return this.toCurrencyFormat(this.inputValue);
+    },
+    disabled: function() {
+      if (this.inputValue <= 0) return true;
+      else return false;
+    }
   }
 };
 </script>
@@ -69,6 +138,7 @@ export default {
   height: 50%;
   border: 1px solid #ced4da;
   border-radius: unset;
+  user-select: none;
 }
 .app-selector-btn img {
   position: absolute;

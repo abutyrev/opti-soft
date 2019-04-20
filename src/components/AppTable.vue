@@ -15,7 +15,13 @@
       </tr>
     </thead>
     <tbody>
-      <AppTableItem v-for="product in products" :key="product.id" :product="product"/>
+      <AppTableItem
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+        :deleteRecord="onDeleteRecord"
+        :editRecord="onEditRecord"
+      />
     </tbody>
   </table>
 </template>
@@ -42,10 +48,10 @@ export default {
         component: AppEditPopup,
         props: {
           record: {
-            name: "asdas",
-            unitPrice: 1,
-            unitsInStock: 2,
-            discontinued: true
+            name: "",
+            unitPrice: 0,
+            unitsInStock: 0,
+            discontinued: false
           }
         },
         escapable: true,
@@ -53,6 +59,25 @@ export default {
         onClose(data) {
           if (data && data.record) {
             vm.$emit("add-record", data.record);
+          }
+        }
+      });
+    },
+    onDeleteRecord(id) {
+      this.$emit("delete-record", id);
+    },
+    onEditRecord(product) {
+      var vm = this;
+      this.$vuedals.open({
+        component: AppEditPopup,
+        props: {
+          record: product
+        },
+        escapable: true,
+        dismissable: false,
+        onClose(data) {
+          if (data && data.record) {
+            vm.$emit("update-record", data.record);
           }
         }
       });

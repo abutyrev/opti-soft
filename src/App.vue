@@ -48,19 +48,29 @@ export default {
     };
   },
   methods: {
-    onUpdateRecord(id) {
-      console.log("update");
+    onUpdateRecord(record) {
+      var index = this.products.findIndex(product => {
+        return product.id == record.id;
+      });
+      var products = this.products.slice();
+      products[index] = record;
+      this.products = products;
     },
     onAddRecord(record) {
-      console.log("add");
       record.id = this.genId();
-      this.products.push(record);
+      var products = this.products.slice();
+      products.push(record);
+      this.products = products;
     },
     onDeleteRecord(id) {
-      console.log('remove');
+      this.products = this.products.filter(product => {
+        return product.id !== id;
+      });
     },
     genId() {
-      return +this.products[this.products.length - 1].id + 1;
+      if (this.products.length)
+        return +this.products[this.products.length - 1].id + 1;
+      return 1;
     }
   }
 };
