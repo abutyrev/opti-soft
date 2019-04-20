@@ -9,8 +9,7 @@
         class="form-control app-selector-input"
         :value="computedInputValue"
         @focus="onFocus"
-        @focusout="onFocusOut"
-        @input="onInput($event.target.value)"
+        @focusout="onFocusOut($event.target.value)"
         @keypress.enter.prevent
       >
       <input
@@ -20,8 +19,7 @@
         class="form-control app-selector-input"
         :value="computedInputValue"
         @focus="onFocus"
-        @focusout="onFocusOut"
-        @input="onInput($event.target.value)"
+        @focusout="onFocusOut($event.target.value)"
         @keypress.enter.prevent
       >
       <div class="app-btns-selector-container">
@@ -69,12 +67,12 @@ export default {
     onFocus() {
       this.isOnFocus = true;
     },
-    onFocusOut() {
+    onFocusOut(value) {
       this.isOnFocus = false;
-    },
-    onInput(value) {
-      var regexp = /^[0-9]+(\.[0-9]{1,2})?$/;
+      var regexp = /^[0-9]*[.]?[0-9]+$/,
+        regexp2 = /^\d+$/;
       if (!regexp.test(value)) return;
+      if (this.selector.id == "unitsInStock" && !regexp2.test(value)) return;
       this.inputValue = +value;
       this.$emit("selector-input", {
         field: this.selector.id,
